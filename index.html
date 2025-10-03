@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Dear!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e91e63; /* A warm, inviting pink */
+            --secondary-color: #00bcd4; /* A complementary cyan */
+            --background-dark: #1a1a2e;
+            --text-light: #e0e0e0;
+            --card-background: #2c2c4d;
+            --accent-glow: rgba(233, 30, 99, 0.6);
+            --transition-duration: 0.8s;
+            --delay-increment: 0.2s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Utility Classes for Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--transition-duration) ease-out, transform var(--transition-duration) ease-out;
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity var(--transition-duration) ease-out, transform var(--transition-duration) ease-out;
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity var(--transition-duration) ease-out, transform var(--transition-duration) ease-out;
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity var(--transition-duration) ease-out, transform var(--transition-duration) ease-out;
+        }
+
+        .active {
+            opacity: 1;
+            transform: translateY(0) translateX(0) scale(1);
+        }
+
+        /* Section Styling */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        section:nth-child(even) {
+            background-color: #1a1a2e; /* Slightly darker for contrast */
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        h1 {
+            font-size: 4em;
+            letter-spacing: 2px;
+            animation: text-glow 2s infinite alternate;
+        }
+
+        @keyframes text-glow {
+            from { text-shadow: 0 0 5px var(--accent-glow); }
+            to { text-shadow: 0 0 20px var(--accent-glow), 0 0 30px var(--primary-color); }
+        }
+
+        h2 {
+            font-size: 2.8em;
+            color: var(--secondary-color);
+        }
+
+        h3 {
+            font-size: 2em;
+        }
+
+        p {
+            font-size: 1.1em;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            color: var(--text-light);
+        }
+
+        /* Hero Section */
+        #hero {
+            background: linear-gradient(135deg, var(--background-dark) 0%, #0d0d1a 100%);
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://picsum.photos/1920/1080?random=1') no-repeat center center/cover; /* Placeholder background */
+            filter: blur(8px) brightness(0.6);
+            z-index: 1;
+        }
+
+        #hero .content {
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            z-index: 3;
+            color: var(--primary-color);
+            font-size: 0.9em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scroll-indicator .arrow {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid var(--primary-color);
+            margin-top: 5px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Image Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 50px auto;
+            perspective: 1000px; /* For 3D transforms */
+        }
+
+        .gallery-item {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px var(--accent-glow);
+            transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) rotateY(5deg) scale(1.03);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 25px var(--primary-color);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 2px solid var(--primary-color);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-caption {
+            padding: 20px;
+            font-size: 1em;
+            color: var(--text-light);
+        }
+
+        /* Timeline Section */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--secondary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            z-index: 0;
+        }
+
+        .timeline-event {
+            padding: 20px 30px;
+            position: relative;
+            background-color: var(--card-background);
+            border-radius: 10px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            max-width: 45%;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            z-index: 1;
+        }
+
+        .timeline-event.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-event:nth-child(even) {
+            margin-left: auto;
+            transform: translateX(-100px); /* Initial position for even items */
+        }
+
+        .timeline-event:nth-child(even).active {
+            transform: translateX(0);
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid var(--background-dark);
+            top: 20px;
+            z-index: 2;
+        }
+
+        .timeline-event:nth-child(odd)::before {
+            right: -40px; /* Position dot on the right for odd items */
+        }
+
+        .timeline-event:nth-child(even)::before {
+            left: -40px; /* Position dot on the left for even items */
+        }
+
+        .timeline-event h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .timeline-event p {
+            font-size: 1em;
+            margin-bottom: 0;
+        }
+
+        /* Message Section */
+        #message {
+            background-image: linear-gradient(rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.8)), url('https://picsum.photos/1920/1080?random=2'); /* Another placeholder */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        #message p {
+            font-size: 1.3em;
+            font-style: italic;
+            max-width: 900px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        /* Call to Action (CTA) / Final Message */
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        .cta-button:hover {
+            background-color: #c2185b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.6);
+        }
+
+        /* Confetti Animation */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color); /* Initial color */
+            animation: fall linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotateZ(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
+        }
+
+        /* Music Player */
+        #music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            background-color: var(--card-background);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        #music-player:hover {
+            transform: scale(1.1);
+            background-color: var(--primary-color);
+        }
+
+        #music-player svg {
+            fill: var(--text-light);
+            width: 24px;
+            height: 24px;
+        }
+
+        #music-player.playing svg {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 { font-size: 3em; }
+            h2 { font-size: 2em; }
+            h3 { font-size: 1.5em; }
+            p { font-size: 1em; }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .timeline::after {
+                left: 20px;
+            }
+            .timeline-event {
+                max-width: 100%;
+                margin-left: 0;
+                padding-left: 60px;
+                transform: translateX(0); /* Reset transform for smaller screens */
+            }
+            .timeline-event:nth-child(even) {
+                margin-left: 0;
+                transform: translateX(0); /* Reset transform for smaller screens */
+            }
+            .timeline-event::before {
+                left: 0;
+                margin-left: 10px;
+            }
+            .timeline-event:nth-child(odd)::before,
+            .timeline-event:nth-child(even)::before {
+                left: 10px;
+                right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section id="hero" class="fade-in">
+        <div class="content">
+            <h1>Happy Birthday!</h1>
+            <p>To the most wonderful person in the world...</p>
+        </div>
+        <div class="scroll-indicator">
+            Scroll Down
+            <div class="arrow"></div>
+        </div>
+    </section>
+
+    <!-- Introduction / Dedication -->
+    <section id="intro" class="fade-in">
+        <p class="slide-in-left">This website is a small tribute to you, filled with moments, memories, and all the love I have.</p>
+        <p class="slide-in-right">Every picture, every word, is a reflection of the joy you bring into my life.</p>
+    </section>
+
+    <!-- Photo Gallery Section -->
+    <section id="gallery">
+        <h2>Our Beautiful Moments</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item scale-in" style="transition-delay: 0s;">
+                <img src="image1.jpg" alt="A lovely moment 1">
+                <div class="gallery-caption">Holding hands, starting our journey.</div>
+            </div>
+            <div class="gallery-item scale-in" style="transition-delay: 0.2s;">
+                <img src="image2.jpg" alt="A lovely moment 2">
+                <div class="gallery-caption">Smiling faces, warm hearts.</div>
+            </div>
+            <div class="gallery-item scale-in" style="transition-delay: 0.4s;">
+                <img src="image3.jpg" alt="A lovely moment 3">
+                <div class="gallery-caption">Adventures in the mall, making memories.</div>
+            </div>
+            <div class="gallery-item scale-in" style="transition-delay: 0.6s;">
+                <img src="image4.jpg" alt="A lovely moment 4">
+                <div class="gallery-caption">Your gentle gaze, a peaceful moment.</div>
+            </div>
+            <div class="gallery-item scale-in" style="transition-delay: 0.8s;">
+                <img src="image5.jpg" alt="A lovely moment 5">
+                <div class="gallery-caption">Under the green trees, a vibrant spirit.</div>
+            </div>
+            <div class="gallery-item scale-in" style="transition-delay: 1s;">
+                <img src="image6.jpg" alt="A lovely moment 6">
+                <div class="gallery-caption">Your radiant smile, lighting up the day.</div>
+            </div>
+             <div class="gallery-item scale-in" style="transition-delay: 1.2s;">
+                <img src="image7.jpg" alt="A lovely moment 7">
+                <div class="gallery-caption">A thoughtful glance, beautiful in every way.</div>
+            </div>
+             <div class="gallery-item scale-in" style="transition-delay: 1.4s;">
+                <img src="image8.jpg" alt="A lovely moment 8">
+                <div class="gallery-caption">Sharing a story, captivating as always.</div>
+            </div>
+             <div class="gallery-item scale-in" style="transition-delay: 1.6s;">
+                <img src="image9.jpg" alt="A lovely moment 9">
+                <div class="gallery-caption">A graceful gesture, pure elegance.</div>
+            </div>
+            <!-- Add more gallery items as needed -->
+        </div>
+        <p class="fade-in" style="transition-delay: 1.8s;">Each photo tells a story, a moment cherished forever.</p>
+    </section>
+
+    <!-- Timeline of Special Moments -->
+    <section id="timeline-moments">
+        <h2>Our Journey Together</h2>
+        <div class="timeline">
+            <div class="timeline-event">
+                <h3>The Day We Met</h3>
+                <p>It feels like yesterday, but also a lifetime ago. That first spark, that first conversation...</p>
+            </div>
+            <div class="timeline-event">
+                <h3>Our First Adventure</h3>
+                <p>Remember that trip to [place]? The laughter, the new experiences, it was unforgettable.</p>
+            </div>
+            <div class="timeline-event">
+                <h3>A Quiet Evening</h3>
+                <p>The times we spent just talking, sharing our dreams and fears, those mean the most.</p>
+            </div>
+            <div class="timeline-event">
+                <h3>Overcoming Challenges</h3>
+                <p>Through every difficulty, our bond only grew stronger. Thank you for being by my side.</p>
+            </div>
+            <div class="timeline-event">
+                <h3>Looking to the Future</h3>
+                <p>Every day with you is a gift, and I can't wait for all the beautiful tomorrows we'll share.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personalized Message Section -->
+    <section id="message" class="fade-in">
+        <h2>My Dear DARLING </h2>
+        <p class="slide-in-left">On your special day, I want to express how incredibly much you mean to me. You are a beacon of light, a source of endless inspiration, and the most beautiful soul I know.</p>
+        <p class="slide-in-right">Your smile brightens my darkest days, your kindness warms my heart, and your presence makes every moment worth living. Thank you for being you, for your laughter, your strength, and your unwavering love.</p>
+        <p class="fade-in">May this year bring you all the happiness, success, and joy you deserve. I wish you nothing but the best, today and always.</p>
+        <p class="fade-in" style="font-style: normal; margin-top: 40px; font-size: 1.5em; color: var(--secondary-color);">With all my love,</p>
+        <p class="fade-in" style="font-family: 'Playfair Display', serif; font-size: 1.8em; color: var(--primary-color);">[RAHUL]</p>
+    </section>
+
+    <!-- Call to Action / Final Wishes -->
+    <section id="cta">
+        <h3>Wishing You The Happiest Birthday!</h3>
+        <p>Click below to make a wish and see a little surprise!</p>
+        <a href="#" class="cta-button" id="wishButton">Make a Wish!</a>
+    </section>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <!-- Music Player -->
+    <div id="music-player">
+        <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        <svg id="pause-icon" style="display:none;" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        <audio id="background-music" loop>
+            <source src="your_favorite_song.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+
+    <script>
+        // Smooth scrolling for navigation (if you add any)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Intersection Observer for Animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Stop observing once active if it's a one-time animation
+                    // observer.unobserve(entry.target);
+                } else {
+                    // Optional: remove 'active' when out of view to re-animate on scroll back
+                    // entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in, .timeline-event').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Special handling for hero section (fade in immediately)
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('hero').classList.add('active');
+        });
+
+
+        // Confetti effect
+        const confettiContainer = document.getElementById('confetti-container');
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDuration = Math.random() * 3 + 2 + 's'; // 2-5s
+            confetti.style.animationDelay = Math.random() * 0.5 + 's'; // 0-0.5s delay
+            const colors = ['var(--primary-color)', 'var(--secondary-color)', '#ffd700', '#00ff7f', '#ff69b4'];
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confettiContainer.appendChild(confetti);
+
+            confetti.addEventListener('animationend', () => {
+                confetti.remove();
+            });
+        }
+
+        function launchConfetti(count = 100, duration = 3000) {
+            let i = 0;
+            const interval = setInterval(() => {
+                createConfetti();
+                i++;
+                if (i >= count) {
+                    clearInterval(interval);
+                }
+            }, 50); // Release confetti every 50ms
+
+            setTimeout(() => {
+                // Clear any remaining confetti after duration
+                confettiContainer.innerHTML = '';
+            }, duration + 500); // Add a small buffer for animation to finish
+        }
+
+        document.getElementById('wishButton').addEventListener('click', (e) => {
+            e.preventDefault();
+            launchConfetti(200, 5000); // Launch 200 pieces for 5 seconds
+            alert('Your wish has been heard! May it come true!');
+        });
+
+
+        // Music Player Logic
+        const musicPlayer = document.getElementById('music-player');
+        const backgroundMusic = document.getElementById('background-music');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        let isPlaying = false;
+
+        musicPlayer.addEventListener('click', () => {
+            if (isPlaying) {
+                backgroundMusic.pause();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+                musicPlayer.classList.remove('playing');
+            } else {
+                backgroundMusic.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+                musicPlayer.classList.add('playing');
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // Auto-play (with user interaction for modern browsers)
+        // This will attempt to play, but most browsers require a user click first.
+        // The floating play button serves as that interaction point.
+        // backgroundMusic.play().catch(error => {
+        //     console.log('Autoplay prevented. User interaction required:', error);
+        // });
+
+    </script>
+</body>
+</html>
